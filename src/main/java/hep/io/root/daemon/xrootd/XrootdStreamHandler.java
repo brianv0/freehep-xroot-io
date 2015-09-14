@@ -1,9 +1,8 @@
 package hep.io.root.daemon.xrootd;
 
-import hep.io.root.daemon.RootStreamHandler;
 import java.io.IOException;
 import java.net.URL;
-import java.net.URLConnection;
+import java.net.URLStreamHandler;
 
 /**
  * A stream handler for files opened with the scalla protocol.
@@ -12,7 +11,7 @@ import java.net.URLConnection;
  * constructor.
  * @author Tony Johnson
  */
-public class XrootdStreamHandler extends RootStreamHandler {
+public class XrootdStreamHandler extends URLStreamHandler {
 
     private XrootdInputStreamFactory streamFactory;
 
@@ -25,11 +24,7 @@ public class XrootdStreamHandler extends RootStreamHandler {
     }
 
     @Override
-    protected URLConnection openConnection(URL uRL) throws IOException {
-        try {
-            return new XrootdURLConnection(uRL, streamFactory);
-        } catch (Exception x) {
-            return super.openConnection(uRL);
-        }
+    protected XrootdURLConnection openConnection(URL uRL) throws IOException {
+        return new XrootdURLConnection(uRL, streamFactory);
     }
 }
