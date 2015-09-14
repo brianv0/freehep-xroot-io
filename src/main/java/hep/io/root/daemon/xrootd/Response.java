@@ -50,7 +50,7 @@ class Response {
      * @return
      * @throws java.io.IOException
      */
-    ByteBuffer getData() throws IOException {
+    public ByteBuffer getData() throws IOException {
         readData();
         return data;
     }
@@ -60,7 +60,7 @@ class Response {
      * to a String.
      * @throws java.io.IOException
      */
-    String getDataAsString() throws IOException {
+    public String getDataAsString() throws IOException {
         readData();
         byte[] dataArray = data.array();
         int start = data.position();
