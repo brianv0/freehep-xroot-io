@@ -20,7 +20,7 @@ public class Session {
         this(new Destination(host, port, userName));
     }
     
-    Session(Destination dest) throws IOException {
+    public Session(Destination dest) throws IOException {
         this.destination = dest;
     }
 
