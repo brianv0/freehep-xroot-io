@@ -34,7 +34,7 @@ public class XrootdURLConnection extends URLConnection {
     private int openStreamCount;
     private XrootdInputStreamFactory streamFactory;
 
-    XrootdURLConnection(URL url, XrootdInputStreamFactory factory) {
+    public XrootdURLConnection(URL url, XrootdInputStreamFactory factory) {
         super(url);
         this.streamFactory = factory;
     }
