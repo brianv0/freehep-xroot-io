@@ -27,7 +27,7 @@ public class ReadOperation extends Operation<Integer> {
     }
 
     @Override
-    Operation getPrerequisite() {
+    public Operation getPrerequisite() {
         return new OpenOperation(file);
     }
 

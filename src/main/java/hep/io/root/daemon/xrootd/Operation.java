@@ -40,7 +40,7 @@ public class Operation <V> {
      * @return The prerequsite or <code>null</code> if operation has no prerequsite.
      */
     
-    Operation getPrerequisite() {
+    public Operation getPrerequisite() {
         return null;
     }
     

@@ -16,7 +16,7 @@ public class WriteOperation extends Operation<Void> {
     }
 
     @Override
-    Operation getPrerequisite() {
+    public Operation getPrerequisite() {
         return new OpenOperation(file);
     }
 
