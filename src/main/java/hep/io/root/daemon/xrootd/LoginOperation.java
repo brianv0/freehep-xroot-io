@@ -46,12 +46,12 @@ public class LoginOperation extends Operation<LoginSession> {
         }
     }
 
-    static class LoginSession {
+    public static class LoginSession {
 
         private byte[] session;
         private byte[] security;
 
-        LoginSession(Response response) throws IOException {
+        public LoginSession(Response response) throws IOException {
 
             int dLen = response.getLength();
             if (dLen > 0) {
