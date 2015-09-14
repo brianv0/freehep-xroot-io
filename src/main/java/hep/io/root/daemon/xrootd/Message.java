@@ -13,16 +13,16 @@ import java.util.logging.Logger;
  * to the header by calling the write* methods of this class.
  * @author tonyj
  */
-class Message {
+public class Message {
 
-    ByteBuffer buffer;
+    private ByteBuffer buffer;
     private static Logger logger = Logger.getLogger(Response.class.getName());
     private ByteBuffer data;
 
     /** Create a message from an Xrootd operation code
      * @param message The op code
      */
-    Message(int message) {
+    public Message(int message) {
         buffer = ByteBuffer.allocate(24);
         buffer.putShort((short) 0);
         buffer.putShort((short)message);
@@ -32,7 +32,7 @@ class Message {
      * @param message The op code
      * @param string The string to be sent with the message (such as a file path)
      */    
-    Message(int message, String string) {
+    public Message(int message, String string) {
         byte[] bytes = string.getBytes();
         buffer = ByteBuffer.allocate(24+bytes.length);
         buffer.putShort((short) 0);
@@ -43,7 +43,7 @@ class Message {
         buffer.position(4);
     }
 
-    int send(short handle, SocketChannel out) throws IOException {
+    public int send(short handle, SocketChannel out) throws IOException {
         buffer.position(0);        
         buffer.putShort(handle);
         logger.finest("->" + buffer.getShort());
@@ -55,19 +55,19 @@ class Message {
         return buffer.limit();
     }
 
-    void writeByte(int i) {
+    public void writeByte(int i) {
         buffer.put((byte) (i & 0xff));
     }
 
-    void writeInt(int i) {
+    public void writeInt(int i) {
         buffer.putInt(i);
     }
 
-    void writeLong(long i) {
+    public void writeLong(long i) {
         buffer.putLong(i);
     }
 
-    void writeShort(int i) {
+    public void writeShort(int i) {
         buffer.putShort((short) (i & 0xffff));
     }
 
@@ -77,7 +77,7 @@ class Message {
      * @param out
      * @throws java.io.IOException
      */
-    void writeExtra(ByteBuffer out) throws IOException {
+    public void writeExtra(ByteBuffer out) throws IOException {
 
     }
 
@@ -87,7 +87,7 @@ class Message {
      * @param offset
      * @param length
      */
-    void setData(byte[] buffer, int offset, int length) {
+    public void setData(byte[] buffer, int offset, int length) {
         this.data = ByteBuffer.wrap(buffer,offset,length);
     }
 }

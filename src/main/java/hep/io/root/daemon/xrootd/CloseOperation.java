@@ -44,7 +44,7 @@ public class CloseOperation extends Operation<Void> {
             this.file = file;
         }
         @Override
-        void writeExtra(ByteBuffer out) throws IOException {
+        public void writeExtra(ByteBuffer out) throws IOException {
             // Note, we do things this way because the file handle may have changed
             // since we were created, as a result of a redirect.
             out.putInt(file.getHandle());
