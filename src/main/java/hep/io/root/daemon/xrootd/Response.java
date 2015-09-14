@@ -100,7 +100,7 @@ public class Response {
         }
     }
 
-    Destination getDestination() {
+    public Destination getDestination() {
         return multiplexor.getDestination();
     }
 
