@@ -35,7 +35,7 @@ public class LocateOperation extends Operation<String[]> {
 
     private static class LocateCallback extends Callback<String[]> {
 
-        String[] responseReady(Response response) throws IOException {
+        public String[] responseReady(Response response) throws IOException {
             String result = response.getDataAsString();
             return result.split("\\s+");
         }

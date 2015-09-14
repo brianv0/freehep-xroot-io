@@ -30,7 +30,7 @@ public class DirListOperation extends Operation<List<String>> {
 
         private List<String> dirListResult = new ArrayList<String>();
 
-        List<String> responseReady(Response response) throws IOException {
+        public List<String> responseReady(Response response) throws IOException {
             String files = response.getDataAsString();
             return Arrays.asList(files.split("\\n"));
         }

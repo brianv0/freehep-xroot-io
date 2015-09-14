@@ -18,7 +18,7 @@ public class StatOperation extends Operation<FileStatus> {
 
     private static class StatCallback extends Callback<FileStatus> {
 
-        FileStatus responseReady(Response response) throws IOException {
+        public FileStatus responseReady(Response response) throws IOException {
             return new FileStatus(response.getDataAsString(),response.getDestination());
         }
     }

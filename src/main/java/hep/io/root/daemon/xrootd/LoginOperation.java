@@ -41,7 +41,7 @@ public class LoginOperation extends Operation<LoginSession> {
     private static class LoginCallback extends Callback<LoginSession> {
 
         @Override
-        LoginSession responseReady(Response response) throws IOException {
+        public LoginSession responseReady(Response response) throws IOException {
             return new LoginSession(response);
         }
     }

@@ -14,7 +14,7 @@ public class ProtocolOperation extends Operation<String> {
     private static class ProtocolCallback extends Callback<String> {
 
         @Override
-        String responseReady(Response response) throws IOException
+        public String responseReady(Response response) throws IOException
         {
             int pval = response.readInt();
             int flags = response.readInt();

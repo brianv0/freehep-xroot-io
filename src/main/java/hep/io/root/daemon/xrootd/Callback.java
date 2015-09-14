@@ -6,7 +6,7 @@ import java.io.IOException;
  *
  * @author tonyj
  */
-abstract class Callback<V> {
+public abstract class Callback<V> {
     /**
      * Called by the system when a response is ready. This method must completely
      * read the response before returning. Since xrootd supports partial responses
@@ -16,13 +16,13 @@ abstract class Callback<V> {
      * @return The final result of processing the response.
      * @throws java.io.IOException If there is an error reading the response
      */
-    abstract V responseReady(Response response) throws IOException;
+    public abstract V responseReady(Response response) throws IOException;
     /**
      * Called if the original message had to be resubmitted. In this case any
      * partial responses previously received should be discarded. Default implementation
      * does nothing.
      */
-    void clear() {
+    public void clear() {
         
     }
     
@@ -30,7 +30,7 @@ abstract class Callback<V> {
      * The default response callback reads any data available in the response,
      * and returns null as the response.
      */
-    static class DefaultCallback extends Callback<Void> {
+    public static class DefaultCallback extends Callback<Void> {
 
         public Void responseReady(Response response) throws IOException {
             response.readData();
@@ -38,9 +38,9 @@ abstract class Callback<V> {
         }
     }
     
-    static class StringCallback extends Callback<String> {
+    public static class StringCallback extends Callback<String> {
 
-        String responseReady(Response response) throws IOException {
+        public String responseReady(Response response) throws IOException {
             return response.getDataAsString();
         }
     }
