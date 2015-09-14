@@ -1,5 +1,6 @@
 package hep.io.root.daemon.xrootd;
 
+import hep.io.root.daemon.xrootd.op.AuthOperation;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.net.UnknownHostException;

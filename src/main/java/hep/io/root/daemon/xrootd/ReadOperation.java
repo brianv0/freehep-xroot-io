@@ -32,12 +32,12 @@ public class ReadOperation extends Operation<Integer> {
     }
 
     @Override
-    Destination getDestination() {
+    public Destination getDestination() {
         return file.getDestination();
     }
 
     @Override
-    Multiplexor getMultiplexor() {
+    public Multiplexor getMultiplexor() {
         return file.getMultiplexor();
     } 
 

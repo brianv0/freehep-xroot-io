@@ -21,12 +21,12 @@ public class WriteOperation extends Operation<Void> {
     }
 
     @Override
-    Destination getDestination() {
+    public Destination getDestination() {
         return file.getDestination();
     }
 
     @Override
-    Multiplexor getMultiplexor() {
+    public Multiplexor getMultiplexor() {
         return file.getMultiplexor();
     } 
 

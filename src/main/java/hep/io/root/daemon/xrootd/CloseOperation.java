@@ -22,17 +22,17 @@ public class CloseOperation extends Operation<Void> {
     }
 
     @Override
-    Destination getDestination() {
+    public Destination getDestination() {
         return file.getDestination();
     }
 
     @Override
-    Operation getPrerequisite() {
+    public Operation getPrerequisite() {
         return new OpenOperation(file);
     }
     
     @Override
-    Multiplexor getMultiplexor() {
+    public Multiplexor getMultiplexor() {
         return file.getMultiplexor();
     } 
     

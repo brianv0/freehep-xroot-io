@@ -16,11 +16,11 @@ public class Operation <V> {
         this.callback = callback;
     }
 
-    Callback<V> getCallback() {
+    public Callback<V> getCallback() {
         return callback;
     }
 
-    Message getMessage() {
+    public Message getMessage() {
         return message;
     }
     
@@ -30,7 +30,7 @@ public class Operation <V> {
         return name;
     }
 
-    String getName() {
+    public String getName() {
         return name;
     }
     
@@ -50,11 +50,11 @@ public class Operation <V> {
      * @return The preferred destination, or <code>null</code> if no preferred destination.
      */
     
-    Destination getDestination() {
+    public Destination getDestination() {
         return null;
     }
     
-    Multiplexor getMultiplexor() {
+    public Multiplexor getMultiplexor() {
         return null;
     }
 
