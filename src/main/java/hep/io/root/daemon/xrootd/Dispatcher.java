@@ -14,7 +14,7 @@ import java.util.logging.Logger;
  * Dispatches messages using a thread pool.
  * @author tonyj
  */
-class Dispatcher {
+public class Dispatcher {
 
     private static Logger logger = Logger.getLogger(Dispatcher.class.getName());
     private static final int WAIT_TIMEOUT = Integer.getInteger("hep.io.root.deamon.xrootd.timeout", 3000).intValue();
@@ -37,11 +37,11 @@ class Dispatcher {
         }
     }
     
-    static Dispatcher instance() {
+    public static Dispatcher instance() {
         return theDispatcher;
     }
 
-    <V> FutureResponse<V> send(Destination destination, Operation<V> operation) {
+    public <V> FutureResponse<V> send(Destination destination, Operation<V> operation) {
         MessageExecutor executor = new MessageExecutor(destination, operation);
         //scheduler.execute(executor);
         executor.run();
