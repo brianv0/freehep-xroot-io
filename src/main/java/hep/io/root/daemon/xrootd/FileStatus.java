@@ -10,7 +10,7 @@ public class FileStatus {
     private Date modTime;
     private Destination destination;
 
-    FileStatus(String response, Destination destination) {
+    public FileStatus(String response, Destination destination) {
         super();
         String[] tokens = response.replace("\000", "").split(" +");
         id = tokens[0];
