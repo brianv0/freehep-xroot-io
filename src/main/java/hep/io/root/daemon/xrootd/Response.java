@@ -11,7 +11,7 @@ import java.util.logging.Logger;
  * Initially this class reads the response header (always 8 bytes).
  * @author tonyj
  */
-class Response {
+public class Response {
 
     private Multiplexor multiplexor;
     private SocketChannel in;
