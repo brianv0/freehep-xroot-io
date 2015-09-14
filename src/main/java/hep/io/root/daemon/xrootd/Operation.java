@@ -10,7 +10,7 @@ public class Operation <V> {
     private Callback<V> callback;
     private String name;
     
-    Operation(String operationName, Message message, Callback<V> callback) {
+    public Operation(String operationName, Message message, Callback<V> callback) {
         this.name = operationName;
         this.message = message;
         this.callback = callback;

@@ -6,9 +6,9 @@ import hep.io.root.daemon.xrootd.Callback.StringCallback;
  * Stages a file or files from tape to disk
  * @author tonyj
  */
-class PrepareOperation extends Operation<String> {
+public class PrepareOperation extends Operation<String> {
 
-    PrepareOperation(String[] paths, int options, int priority) {
+    public PrepareOperation(String[] paths, int options, int priority) {
         super("prepare", new PrepareMessage(paths, options, priority), new StringCallback());
     }
 

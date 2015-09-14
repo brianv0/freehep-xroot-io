@@ -6,9 +6,9 @@ import hep.io.root.daemon.xrootd.Callback.DefaultCallback;
  * Perform an xrootd auth operation
  * @author tonyj
  */
-class AuthOperation extends Operation<Void> {
+public class AuthOperation extends Operation<Void> {
 
-    AuthOperation() {
+    public AuthOperation() {
         super("auth", new AuthMessage(), new DefaultCallback());
     }
 

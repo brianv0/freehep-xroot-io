@@ -6,9 +6,9 @@ import hep.io.root.daemon.xrootd.Callback.StringCallback;
  * Query a file.
  * @author tonyj
  */
-class QueryOperation extends Operation<String> {
+public class QueryOperation extends Operation<String> {
 
-    QueryOperation(int queryType, String path) {
+    public QueryOperation(int queryType, String path) {
         super("query", new QueryMessage(queryType, path), new StringCallback());
     }
 

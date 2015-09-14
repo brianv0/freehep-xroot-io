@@ -6,13 +6,13 @@ import java.io.IOException;
  * Obtain status information for a path.
  * @author tonyj
  */
-class StatOperation extends Operation<FileStatus> {
+public class StatOperation extends Operation<FileStatus> {
 
     /**
      * Create the StatOperation.
      * @param path Is the path whose status information is to be returned.
      */
-    StatOperation(String path) {
+    public StatOperation(String path) {
         super("stat", new Message(XrootdProtocol.kXR_stat, path),new StatCallback());
     }
 

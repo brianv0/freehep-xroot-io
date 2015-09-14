@@ -8,7 +8,7 @@ import java.nio.ByteBuffer;
  * Close a previously opened file, communications path, or path group.
  * @author tonyj
  */
-class CloseOperation extends Operation<Void> {
+public class CloseOperation extends Operation<Void> {
 
     private OpenFile file;
 
@@ -16,7 +16,7 @@ class CloseOperation extends Operation<Void> {
      * Create a close operation
      * @param file The file to close
      */
-    CloseOperation(OpenFile file) {
+    public CloseOperation(OpenFile file) {
         super("close", new CloseMessage(file), new DefaultCallback());
         this.file = file;
     }

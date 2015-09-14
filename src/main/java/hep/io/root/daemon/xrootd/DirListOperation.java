@@ -9,13 +9,13 @@ import java.util.List;
  * Enumerate the contents of a directory.
  * @author tonyj
  */
-class DirListOperation extends Operation<List<String>> {
+public class DirListOperation extends Operation<List<String>> {
 
     /**
      * Create the DirListOperation.
      * @param path is the path of a directory whose entries are to be listed.
      */
-    DirListOperation(String path) {
+    public DirListOperation(String path) {
         super("dirList", new DirListMessage(path), new DirListCallback());
     }
 

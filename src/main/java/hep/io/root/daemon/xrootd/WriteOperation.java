@@ -6,11 +6,11 @@ import hep.io.root.daemon.xrootd.Callback.DefaultCallback;
  * Write data to an open file.
  * @author tonyj
  */
-class WriteOperation extends Operation<Void> {
+public class WriteOperation extends Operation<Void> {
 
     private OpenFile file;
 
-    WriteOperation(OpenFile file, long fileOffset, byte[] buffer, int offset, int length) {
+    public WriteOperation(OpenFile file, long fileOffset, byte[] buffer, int offset, int length) {
         super("write", new WriteMessage(file, buffer, offset, length, fileOffset), new DefaultCallback());
         this.file = file;
     }

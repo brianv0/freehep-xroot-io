@@ -9,19 +9,19 @@ import java.nio.channels.FileChannel;
  * Read from an open file.
  * @author tonyj
  */
-class ReadOperation extends Operation<Integer> {
+public class ReadOperation extends Operation<Integer> {
 
     private OpenFile file;
 
-    ReadOperation(OpenFile file, long fileOffset, byte[] buffer, int bufOffset, int size) {
+    public ReadOperation(OpenFile file, long fileOffset, byte[] buffer, int bufOffset, int size) {
         super("read", new ReadMessage(file, fileOffset, size), new ReadCallback(ByteBuffer.wrap(buffer, bufOffset, size)));
         this.file = file;
     }
-    ReadOperation(OpenFile file, long fileOffset, ByteBuffer buffer) {
+    public ReadOperation(OpenFile file, long fileOffset, ByteBuffer buffer) {
         super("read", new ReadMessage(file, fileOffset, buffer.remaining()), new ReadCallback(buffer));
         this.file = file;
     }
-    ReadOperation(OpenFile file, FileChannel fileChannel, long fileOffset, int size) {
+    public ReadOperation(OpenFile file, FileChannel fileChannel, long fileOffset, int size) {
         super("read", new ReadMessage(file, fileOffset, size), new FileReadCallback(fileChannel, fileOffset, size));
         this.file = file;
     }

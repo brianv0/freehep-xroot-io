@@ -6,7 +6,7 @@ import java.io.IOException;
  * Locate a file.
  * @author tonyj
  */
-class LocateOperation extends Operation<String[]> {
+public class LocateOperation extends Operation<String[]> {
 
     /**
      * Create the LocateOperation.
@@ -14,7 +14,7 @@ class LocateOperation extends Operation<String[]> {
      * @param noWait Provide information as soon as possible 
      * @param refresh Update cached information on the file's location 
      */
-    LocateOperation(String path, boolean noWait, boolean refresh) {
+    public LocateOperation(String path, boolean noWait, boolean refresh) {
         super("locate", new LocateMessage(path, noWait, refresh), new LocateCallback());
     }
 

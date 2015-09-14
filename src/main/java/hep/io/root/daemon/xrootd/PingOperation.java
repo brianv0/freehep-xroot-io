@@ -6,9 +6,9 @@ import hep.io.root.daemon.xrootd.Callback.DefaultCallback;
  * Ping a server.
  * @author tonyj
  */
-class PingOperation extends Operation<Void> {
+public class PingOperation extends Operation<Void> {
 
-    PingOperation() {
+    public PingOperation() {
         super("ping", new Message(XrootdProtocol.kXR_ping), new DefaultCallback());
     }
 }

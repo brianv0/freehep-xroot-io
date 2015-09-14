@@ -9,11 +9,11 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Perform an xrootd login operation
  * @author tonyj
  */
-class LoginOperation extends Operation<LoginSession> {
+public class LoginOperation extends Operation<LoginSession> {
 
     private static AtomicInteger pseudoPid = new AtomicInteger(1);
 
-    LoginOperation(String user) {
+    public LoginOperation(String user) {
         super("login", new LoginMessage(user), new LoginCallback());
     }
 

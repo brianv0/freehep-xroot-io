@@ -6,13 +6,13 @@ import java.io.IOException;
  * Open a file.
  * @author tonyj
  */
-class OpenOperation extends Operation<OpenFile> {
+public class OpenOperation extends Operation<OpenFile> {
 
-    OpenOperation(String path, int mode, int options) {
+    public OpenOperation(String path, int mode, int options) {
         this(new OpenFile(path, mode, options));
     }
 
-    OpenOperation(OpenFile file) {
+    public OpenOperation(OpenFile file) {
         super("open", new OpenMessage(file), new OpenCallback(file));
     }
 
