@@ -131,7 +131,7 @@ public class Response {
         return status;
     }
 
-    int getLength() {
+    public int getLength() {
         return dataLength;
     }
 
