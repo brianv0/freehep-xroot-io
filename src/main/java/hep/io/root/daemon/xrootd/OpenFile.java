@@ -20,21 +20,21 @@ public class OpenFile {
     private int compressionType;
     private FileStatus status;
 
-    OpenFile(String path, int mode, int options) {
+    public OpenFile(String path, int mode, int options) {
         this.path = path;
         this.mode = mode;
         this.options = options;
     }
 
-    int getHandle() {
+    public int getHandle() {
         return handle;
     }
 
-    Destination getDestination() {
+    public Destination getDestination() {
         return destination;
     }
     
-    Multiplexor getMultiplexor() {
+    public Multiplexor getMultiplexor() {
         return multiplexor;
     }
     

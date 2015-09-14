@@ -16,7 +16,7 @@ import java.util.logging.Logger;
  * xrootd server. Many clients may use a single multiplexor at the same time.
  * @author tonyj
  */
-class Multiplexor implements MultiplexorMBean {
+public class Multiplexor implements MultiplexorMBean {
 
     private static final int MAX_IDLE = Integer.getInteger("hep.io.root.daemon.xrootd.ConnectionTimeout", 60000);
     private static final int SEND_BUFFER_SIZE = Integer.getInteger("hep.io.root.daemon.xrootd.SendBufferSize", 65536);
@@ -36,7 +36,7 @@ class Multiplexor implements MultiplexorMBean {
     private int pval;
     private int flag;
 
-    Multiplexor(Destination desc) throws IOException {
+    public Multiplexor(Destination desc) throws IOException {
         logger.fine(desc + " Creating multiplexor");
         this.descriptor = desc;
         channel = SocketChannel.open();
@@ -122,7 +122,7 @@ class Multiplexor implements MultiplexorMBean {
         return getOutstandingResponseCount() == 0 && getIdleTime() > MAX_IDLE;
     }
 
-    Destination getDestination() {
+    public Destination getDestination() {
         return descriptor;
     }
 
