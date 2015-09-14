@@ -1,5 +1,6 @@
 package hep.io.root.daemon.xrootd;
 
+import hep.io.root.daemon.xrootd.util.ByteFormat;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
