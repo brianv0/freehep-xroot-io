@@ -1,6 +1,8 @@
 package hep.io.root.daemon.xrootd;
 
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -15,13 +17,23 @@ public class Session {
     private static Logger logger = Logger.getLogger(Session.class.getName());
     private Dispatcher dispatcher = Dispatcher.instance();
     private Destination destination;
+    private String userName;
+    
+    public Session(String host, int port, String userName) throws UnknownHostException {
+        InetAddress address = InetAddress.getByName(host);
+        if(port <= 0){
+            port = XrootdProtocol.defaultPort;
+        }
+        this.destination = new Destination(address, port);
+        this.userName = userName;
+    }
 
-    public Session(String host, int port, String userName) throws IOException {
-        this(new Destination(host, port, userName));
+    public Destination getDestination(){
+        return destination;
     }
     
-    public Session(Destination dest) throws IOException {
-        this.destination = dest;
+    public String getUserName(){
+        return userName;
     }
 
     public void close() throws IOException {
@@ -37,7 +49,7 @@ public class Session {
     {
         Destination actualDestination = operation.getDestination();
         if (actualDestination == null) actualDestination = destination;
-        return dispatcher.send(actualDestination, operation);
+        return dispatcher.send(actualDestination, this, operation);
     }
     
     public List<String> dirList(String path) throws IOException {

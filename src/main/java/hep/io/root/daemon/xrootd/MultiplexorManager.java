@@ -1,5 +1,6 @@
 package hep.io.root.daemon.xrootd;
 
+import hep.io.root.daemon.xrootd.Destination.RedirectedDestination;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.net.UnknownHostException;
@@ -15,6 +16,8 @@ import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 import javax.management.StandardMBean;
 import hep.io.root.daemon.xrootd.LoginOperation.LoginSession;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
@@ -39,13 +42,13 @@ class MultiplexorManager {
         scheduler.scheduleAtFixedRate(new IdleConnectionCloser(), 5, 5, TimeUnit.SECONDS);
     }
 
-    private void createMultiplexor(Destination destination, int attempt) {
-        Destination actualDestination = destination.getAlternateDestination(attempt);
+    private void createMultiplexor(Destination destination, Session session, int attempt) {
+        Destination actualDestination = getAlternateDestination(destination, attempt);
         try {
             Multiplexor multiplexor = new Multiplexor(actualDestination);
-            multiplexor.connect(new LoginResponseListener(actualDestination, attempt));
+            multiplexor.connect(new LoginResponseListener(actualDestination, session, attempt));
         } catch (IOException x) {
-            connectionFailed(actualDestination,attempt,x);
+            connectionFailed(actualDestination, session, attempt,x);
         }
     }
 
@@ -59,16 +62,16 @@ class MultiplexorManager {
         inProgressConnections.remove(multiplexor.getDestination());
     }
 
-    private synchronized void connectionFailed(Destination destination, int attempt, IOException iOException) {
-        logger.log(Level.WARNING, String.format("Connection to %s failed (attempt %d) ",destination,attempt), iOException);
-        scheduler.schedule(new Reconnect(destination,attempt+1), 2, TimeUnit.SECONDS);
+    private synchronized void connectionFailed(Destination destination, Session session, int attempt, IOException ex) {
+        logger.log(Level.WARNING, String.format("Connection to %s failed (attempt %d) ",destination,attempt), ex);
+        scheduler.schedule(new Reconnect(destination, session, attempt+1), 2, TimeUnit.SECONDS);
     }
 
     /** If a multiplexor is ready to be used for the given destination, return it immediately
      * otherwise return <code>void</code> and call the given callback when the connection
      * becomes ready.
      */
-    synchronized Multiplexor getMultiplexor(Destination destination, MultiplexorReadyCallback callback) {
+    synchronized Multiplexor getMultiplexor(Destination destination, Session session, MultiplexorReadyCallback callback) {
         Multiplexor result = multiplexorMap.get(destination);
         if (result != null && result.isSocketClosed()) {
             multiplexorMap.remove(result);
@@ -81,7 +84,7 @@ class MultiplexorManager {
                 callbacks = new ArrayList<MultiplexorReadyCallback>();
                 inProgressConnections.put(destination, callbacks);
                 callbacks.add(callback);
-                createMultiplexor(destination,0);
+                createMultiplexor(destination, session, 0);
             } else {
                 callbacks.add(callback);
             }
@@ -122,11 +125,13 @@ class MultiplexorManager {
         private AuthOperation auth;
         private Stage stage = Stage.CONNECT;
         private int attempt;
+        private Session session;
 
-        LoginResponseListener(Destination destination, int attempt) {
+        LoginResponseListener(Destination destination, Session session, int attempt) {
             this.attempt = attempt;
             this.destination = destination;
-            login = new LoginOperation(destination.getUserName());
+            this.session = session;
+            login = new LoginOperation(session.getUserName());
         }
 
         public void reschedule(long seconds, TimeUnit SECONDS) {
@@ -168,20 +173,22 @@ class MultiplexorManager {
         }
 
         public void handleSocketError(IOException iOException) {
-            connectionFailed(destination,attempt,iOException);
+            connectionFailed(destination, session, attempt,iOException);
         }
     }
     private class Reconnect implements Runnable {
         private Destination destination;
         private int attempt;
+        private Session session;
 
-        public Reconnect(Destination destination, int attempt) {
+        public Reconnect(Destination destination, Session session, int attempt) {
             this.destination = destination;
             this.attempt = attempt;
+            this.session = session;
         }
 
         public void run() {
-            createMultiplexor(destination, attempt);
+            createMultiplexor(destination, session, attempt);
         }
     }
     private class IdleConnectionCloser implements Runnable {
@@ -199,4 +206,23 @@ class MultiplexorManager {
             }
         }
     }
+    
+    public static Destination getAlternateDestination(Destination address, int index) {
+        
+        try{
+            InetAddress[] addresses = InetAddress.getAllByName(address.getHostName());
+            if(index == 0 || addresses.length < 2){
+                return address;
+            }
+            InetAddress next = addresses[index];
+            if(address instanceof RedirectedDestination){
+                Destination previous = ((RedirectedDestination) address).getPrevious();
+                return new RedirectedDestination(next, address.getPort(), previous);
+            }
+            return new Destination(next, address.getPort());
+        } catch (UnknownHostException ex){
+            throw new RuntimeException("Host disappeared", ex);
+        }
+    }
+
 }

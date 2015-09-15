@@ -16,8 +16,6 @@ public interface MultiplexorMBean {
     
     long getIdleTime();
 
-    String getUserName();
-
     String getHostAndPort();
     
     Date getLastActive();

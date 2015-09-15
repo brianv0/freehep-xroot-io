@@ -86,8 +86,8 @@ public class XrootdURLConnection extends URLConnection {
             throw new IOException("Authorization Required");
         }
         logger.fine("Opening rootd connection to: " + url);
-        Destination dest = new Destination(url.getHost(), url.getPort(), username);
-        session = new Session(dest);
+        session = new Session(url.getHost(), url.getPort(), username);
+        Destination dest = session.getDestination();
         try {
             FileStatus status = session.stat(url.getFile());
             fSize = status.getSize();
@@ -98,7 +98,8 @@ public class XrootdURLConnection extends URLConnection {
             // in the checksum being sent to the redirector
             if (!dest.equals(status.getFileLocation())) {
                 session.close();
-                session = new Session(status.getFileLocation());
+                Destination d = status.getFileLocation();
+                session = new Session(d.getHostName(), d.getPort(), username);
             }
             connected = true;
         } catch (IOException t) {

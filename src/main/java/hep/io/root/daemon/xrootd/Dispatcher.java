@@ -1,8 +1,10 @@
 package hep.io.root.daemon.xrootd;
 
+import hep.io.root.daemon.xrootd.Destination.RedirectedDestination;
 import hep.io.root.daemon.xrootd.MultiplexorManager.MultiplexorReadyCallback;
 import java.io.IOException;
 import java.io.InterruptedIOException;
+import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadFactory;
@@ -41,8 +43,8 @@ public class Dispatcher {
         return theDispatcher;
     }
 
-    public <V> FutureResponse<V> send(Destination destination, Operation<V> operation) {
-        MessageExecutor executor = new MessageExecutor(destination, operation);
+    public <V> FutureResponse<V> send(Destination destination, Session session, Operation<V> operation) {
+        MessageExecutor executor = new MessageExecutor(destination, session, operation);
         //scheduler.execute(executor);
         executor.run();
         return new FutureMessageResponse<V>(executor);
@@ -146,17 +148,19 @@ public class Dispatcher {
         private boolean isDone = false;
         private int errors = 0;
         private Destination destination;
+        private Session session;
         private long startTime = System.currentTimeMillis();
 
-        MessageExecutor(Destination destination, Operation<V> operation) {
+        MessageExecutor(Destination destination, Session session, Operation<V> operation) {
             this.destination = destination;
             this.operation = operation;
+            this.session = session;
         }
 
         public void run() {
             try {
                 
-                Multiplexor multiplexor = manager.getMultiplexor(destination,this);
+                Multiplexor multiplexor = manager.getMultiplexor(destination, session, this);
                 if (multiplexor == null)
                 {
                    return;
@@ -166,7 +170,7 @@ public class Dispatcher {
                 {
                    Operation preReq = operation.getPrerequisite();
                    ChainCallback cc = new ChainCallback(preReq.getCallback(), this);
-                   MessageExecutor executor = new MessageExecutor(destination, new Operation(preReq.getName() + "-chain", preReq.getMessage(), cc));
+                   MessageExecutor executor = new MessageExecutor(destination, session, new Operation(preReq.getName() + "-chain", preReq.getMessage(), cc));
                    resend(executor);                    
                 }
                 else
@@ -197,7 +201,8 @@ public class Dispatcher {
         }
 
         public void handleRedirect(String host, int port) throws UnknownHostException {
-            Destination redirected = destination.getRedirected(host, port);
+            InetAddress addr = InetAddress.getByName(host);
+            Destination redirected = new RedirectedDestination(addr, port, destination);
             operation.getCallback().clear();
             destination = redirected;
             resend(this);
@@ -214,8 +219,8 @@ public class Dispatcher {
 
         public void handleSocketError(IOException iOException) {
             errors++;
-            if (errors > 1 && destination.getPrevious() != null) {
-                destination = destination.getPrevious();
+            if (errors > 1 && destination instanceof RedirectedDestination) {
+                destination = ((RedirectedDestination) destination).getPrevious();
             }
             operation.getCallback().clear();
             resend(this,1,TimeUnit.SECONDS);

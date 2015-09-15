@@ -36,7 +36,7 @@ public class Multiplexor implements MultiplexorMBean {
     private int pval;
     private int flag;
 
-    public Multiplexor(Destination desc) throws IOException {
+     public Multiplexor(Destination desc) throws IOException {
         logger.fine(desc + " Creating multiplexor");
         this.descriptor = desc;
         channel = SocketChannel.open();
@@ -90,12 +90,8 @@ public class Multiplexor implements MultiplexorMBean {
         return createDate;
     }
 
-    public String getUserName() {
-        return descriptor.getUserName();
-    }
-
     public String getHostAndPort() {
-        return descriptor.getAddressAndPort();
+        return descriptor.toString();
     }
 
     public Date getLastActive() {
@@ -259,7 +255,7 @@ public class Multiplexor implements MultiplexorMBean {
 
         public void run() {
             try {
-                channel.connect(descriptor.getSocketAddress());
+                channel.connect(descriptor);
                 sendInitialHandshake();
 
                 for (; !thread.isInterrupted();) {
