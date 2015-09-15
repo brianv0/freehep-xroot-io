@@ -1,10 +1,10 @@
 package hep.io.root.daemon.xrootd;
 
-import hep.io.root.daemon.xrootd.Destination.RedirectedDestination;
 import hep.io.root.daemon.xrootd.MultiplexorManager.MultiplexorReadyCallback;
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadFactory;
@@ -43,7 +43,7 @@ public class Dispatcher {
         return theDispatcher;
     }
 
-    public <V> FutureResponse<V> send(Destination destination, Session session, Operation<V> operation) {
+    public <V> FutureResponse<V> send(InetSocketAddress destination, Session session, Operation<V> operation) {
         MessageExecutor executor = new MessageExecutor(destination, session, operation);
         //scheduler.execute(executor);
         executor.run();
@@ -147,11 +147,11 @@ public class Dispatcher {
         private IOException exception;
         private boolean isDone = false;
         private int errors = 0;
-        private Destination destination;
+        private InetSocketAddress destination;
         private Session session;
         private long startTime = System.currentTimeMillis();
 
-        MessageExecutor(Destination destination, Session session, Operation<V> operation) {
+        MessageExecutor(InetSocketAddress destination, Session session, Operation<V> operation) {
             this.destination = destination;
             this.operation = operation;
             this.session = session;
@@ -202,7 +202,7 @@ public class Dispatcher {
 
         public void handleRedirect(String host, int port) throws UnknownHostException {
             InetAddress addr = InetAddress.getByName(host);
-            Destination redirected = new RedirectedDestination(addr, port, destination);
+            InetSocketAddress redirected = new RedirectedInetSocketAddress(addr, port, destination);
             operation.getCallback().clear();
             destination = redirected;
             resend(this);
@@ -219,8 +219,8 @@ public class Dispatcher {
 
         public void handleSocketError(IOException iOException) {
             errors++;
-            if (errors > 1 && destination instanceof RedirectedDestination) {
-                destination = ((RedirectedDestination) destination).getPrevious();
+            if (errors > 1 && destination instanceof RedirectedInetSocketAddress) {
+                destination = ((RedirectedInetSocketAddress) destination).getPrevious();
             }
             operation.getCallback().clear();
             resend(this,1,TimeUnit.SECONDS);

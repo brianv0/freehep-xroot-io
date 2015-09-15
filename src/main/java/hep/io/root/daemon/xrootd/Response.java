@@ -2,6 +2,7 @@ package hep.io.root.daemon.xrootd;
 
 import java.io.EOFException;
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 import java.util.logging.Logger;
@@ -100,7 +101,7 @@ public class Response {
         }
     }
 
-    public Destination getDestination() {
+    public InetSocketAddress getDestination() {
         return multiplexor.getDestination();
     }
 

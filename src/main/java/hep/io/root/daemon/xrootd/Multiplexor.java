@@ -1,6 +1,7 @@
 package hep.io.root.daemon.xrootd;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 import java.util.BitSet;
@@ -22,7 +23,7 @@ public class Multiplexor implements MultiplexorMBean {
     private static final int SEND_BUFFER_SIZE = Integer.getInteger("hep.io.root.daemon.xrootd.SendBufferSize", 65536);
     private static final int RECEIVE_BUFFER_SIZE = Integer.getInteger("hep.io.root.daemon.xrootd.ReceivedBufferSize", 65536);
     private static Logger logger = Logger.getLogger(Multiplexor.class.getName());
-    private Destination descriptor;
+    private InetSocketAddress descriptor;
     private SocketChannel channel;
     private Response response;
     private BitSet handles = new BitSet();
@@ -36,7 +37,7 @@ public class Multiplexor implements MultiplexorMBean {
     private int pval;
     private int flag;
 
-     public Multiplexor(Destination desc) throws IOException {
+     public Multiplexor(InetSocketAddress desc) throws IOException {
         logger.fine(desc + " Creating multiplexor");
         this.descriptor = desc;
         channel = SocketChannel.open();
@@ -118,7 +119,7 @@ public class Multiplexor implements MultiplexorMBean {
         return getOutstandingResponseCount() == 0 && getIdleTime() > MAX_IDLE;
     }
 
-    public Destination getDestination() {
+    public InetSocketAddress getDestination() {
         return descriptor;
     }
 

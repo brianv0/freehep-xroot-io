@@ -2,6 +2,7 @@ package hep.io.root.daemon.xrootd;
 
 import java.io.EOFException;
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 
@@ -32,7 +33,7 @@ public class ReadOperation extends Operation<Integer> {
     }
 
     @Override
-    public Destination getDestination() {
+    public InetSocketAddress getDestination() {
         return file.getDestination();
     }
 

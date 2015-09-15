@@ -2,6 +2,7 @@ package hep.io.root.daemon.xrootd;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.util.List;
 import java.util.logging.Logger;
@@ -16,7 +17,7 @@ public class Session {
 
     private static Logger logger = Logger.getLogger(Session.class.getName());
     private Dispatcher dispatcher = Dispatcher.instance();
-    private Destination destination;
+    private InetSocketAddress destination;
     private String userName;
     
     public Session(String host, int port, String userName) throws UnknownHostException {
@@ -24,11 +25,11 @@ public class Session {
         if(port <= 0){
             port = XrootdProtocol.defaultPort;
         }
-        this.destination = new Destination(address, port);
+        this.destination = new InetSocketAddress(address, port);
         this.userName = userName;
     }
 
-    public Destination getDestination(){
+    public InetSocketAddress getDestination(){
         return destination;
     }
     
@@ -47,7 +48,7 @@ public class Session {
      */
     public <V> FutureResponse<V> send(Operation<V> operation)
     {
-        Destination actualDestination = operation.getDestination();
+        InetSocketAddress actualDestination = operation.getDestination();
         if (actualDestination == null) actualDestination = destination;
         return dispatcher.send(actualDestination, this, operation);
     }

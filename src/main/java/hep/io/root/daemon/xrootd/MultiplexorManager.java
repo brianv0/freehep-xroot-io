@@ -1,6 +1,5 @@
 package hep.io.root.daemon.xrootd;
 
-import hep.io.root.daemon.xrootd.Destination.RedirectedDestination;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.net.UnknownHostException;
@@ -33,8 +32,8 @@ class MultiplexorManager {
     }
     private static Logger logger = Logger.getLogger(MultiplexorManager.class.getName());
     private static MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
-    private Map<Destination, Multiplexor> multiplexorMap = new HashMap<Destination, Multiplexor>();
-    private Map<Destination, List<MultiplexorReadyCallback>> inProgressConnections = new HashMap<Destination, List<MultiplexorReadyCallback>>();
+    private Map<InetSocketAddress, Multiplexor> multiplexorMap = new HashMap<InetSocketAddress, Multiplexor>();
+    private Map<InetSocketAddress, List<MultiplexorReadyCallback>> inProgressConnections = new HashMap<InetSocketAddress, List<MultiplexorReadyCallback>>();
     private ScheduledThreadPoolExecutor scheduler;
 
     MultiplexorManager(ScheduledThreadPoolExecutor scheduler) {
@@ -42,8 +41,8 @@ class MultiplexorManager {
         scheduler.scheduleAtFixedRate(new IdleConnectionCloser(), 5, 5, TimeUnit.SECONDS);
     }
 
-    private void createMultiplexor(Destination destination, Session session, int attempt) {
-        Destination actualDestination = getAlternateDestination(destination, attempt);
+    private void createMultiplexor(InetSocketAddress destination, Session session, int attempt) {
+        InetSocketAddress actualDestination = getAlternateDestination(destination, attempt);
         try {
             Multiplexor multiplexor = new Multiplexor(actualDestination);
             multiplexor.connect(new LoginResponseListener(actualDestination, session, attempt));
@@ -62,7 +61,7 @@ class MultiplexorManager {
         inProgressConnections.remove(multiplexor.getDestination());
     }
 
-    private synchronized void connectionFailed(Destination destination, Session session, int attempt, IOException ex) {
+    private synchronized void connectionFailed(InetSocketAddress destination, Session session, int attempt, IOException ex) {
         logger.log(Level.WARNING, String.format("Connection to %s failed (attempt %d) ",destination,attempt), ex);
         scheduler.schedule(new Reconnect(destination, session, attempt+1), 2, TimeUnit.SECONDS);
     }
@@ -71,7 +70,7 @@ class MultiplexorManager {
      * otherwise return <code>void</code> and call the given callback when the connection
      * becomes ready.
      */
-    synchronized Multiplexor getMultiplexor(Destination destination, Session session, MultiplexorReadyCallback callback) {
+    synchronized Multiplexor getMultiplexor(InetSocketAddress destination, Session session, MultiplexorReadyCallback callback) {
         Multiplexor result = multiplexorMap.get(destination);
         if (result != null && result.isSocketClosed()) {
             multiplexorMap.remove(result);
@@ -120,14 +119,14 @@ class MultiplexorManager {
 
     private class LoginResponseListener implements ResponseListener {
 
-        private Destination destination;
+        private InetSocketAddress destination;
         private LoginOperation login;
         private AuthOperation auth;
         private Stage stage = Stage.CONNECT;
         private int attempt;
         private Session session;
 
-        LoginResponseListener(Destination destination, Session session, int attempt) {
+        LoginResponseListener(InetSocketAddress destination, Session session, int attempt) {
             this.attempt = attempt;
             this.destination = destination;
             this.session = session;
@@ -177,11 +176,11 @@ class MultiplexorManager {
         }
     }
     private class Reconnect implements Runnable {
-        private Destination destination;
+        private InetSocketAddress destination;
         private int attempt;
         private Session session;
 
-        public Reconnect(Destination destination, Session session, int attempt) {
+        public Reconnect(InetSocketAddress destination, Session session, int attempt) {
             this.destination = destination;
             this.attempt = attempt;
             this.session = session;
@@ -194,8 +193,8 @@ class MultiplexorManager {
     private class IdleConnectionCloser implements Runnable {
 
         public void run() {
-            for (Iterator<Map.Entry<Destination, Multiplexor>> i = multiplexorMap.entrySet().iterator(); i.hasNext();) {
-                Map.Entry<Destination, Multiplexor> entry = i.next();
+            for (Iterator<Map.Entry<InetSocketAddress, Multiplexor>> i = multiplexorMap.entrySet().iterator(); i.hasNext();) {
+                Map.Entry<InetSocketAddress, Multiplexor> entry = i.next();
                 Multiplexor m = entry.getValue();
                 if (m.isIdle()) {
                     i.remove();
@@ -207,7 +206,7 @@ class MultiplexorManager {
         }
     }
     
-    public static Destination getAlternateDestination(Destination address, int index) {
+    public static InetSocketAddress getAlternateDestination(InetSocketAddress address, int index) {
         
         try{
             InetAddress[] addresses = InetAddress.getAllByName(address.getHostName());
@@ -215,11 +214,11 @@ class MultiplexorManager {
                 return address;
             }
             InetAddress next = addresses[index];
-            if(address instanceof RedirectedDestination){
-                Destination previous = ((RedirectedDestination) address).getPrevious();
-                return new RedirectedDestination(next, address.getPort(), previous);
+            if(address instanceof RedirectedInetSocketAddress){
+                InetSocketAddress previous = ((RedirectedInetSocketAddress) address).getPrevious();
+                return new RedirectedInetSocketAddress(next, address.getPort(), previous);
             }
-            return new Destination(next, address.getPort());
+            return new InetSocketAddress(next, address.getPort());
         } catch (UnknownHostException ex){
             throw new RuntimeException("Host disappeared", ex);
         }

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.Authenticator;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.PasswordAuthentication;
 import java.net.URL;
 import java.net.URLConnection;
@@ -87,7 +88,7 @@ public class XrootdURLConnection extends URLConnection {
         }
         logger.fine("Opening rootd connection to: " + url);
         session = new Session(url.getHost(), url.getPort(), username);
-        Destination dest = session.getDestination();
+        InetSocketAddress dest = session.getDestination();
         try {
             FileStatus status = session.stat(url.getFile());
             fSize = status.getSize();
@@ -98,7 +99,7 @@ public class XrootdURLConnection extends URLConnection {
             // in the checksum being sent to the redirector
             if (!dest.equals(status.getFileLocation())) {
                 session.close();
-                Destination d = status.getFileLocation();
+                InetSocketAddress d = status.getFileLocation();
                 session = new Session(d.getHostName(), d.getPort(), username);
             }
             connected = true;

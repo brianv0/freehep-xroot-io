@@ -1,5 +1,7 @@
 package hep.io.root.daemon.xrootd;
 
+import java.net.InetSocketAddress;
+
 /**
  * An xrootd operation consists of a message to be sent to the server, plus
  * a callback to handle the response from the server.
@@ -50,7 +52,7 @@ public class Operation <V> {
      * @return The preferred destination, or <code>null</code> if no preferred destination.
      */
     
-    public Destination getDestination() {
+    public InetSocketAddress getDestination() {
         return null;
     }
     

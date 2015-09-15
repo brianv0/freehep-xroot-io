@@ -1,5 +1,6 @@
 package hep.io.root.daemon.xrootd;
 
+import java.net.InetSocketAddress;
 import java.util.Date;
 
 public class FileStatus {
@@ -8,9 +9,9 @@ public class FileStatus {
     private long size;
     private int flags;
     private Date modTime;
-    private Destination destination;
+    private InetSocketAddress destination;
 
-    public FileStatus(String response, Destination destination) {
+    public FileStatus(String response, InetSocketAddress destination) {
         super();
         String[] tokens = response.replace("\000", "").split(" +");
         id = tokens[0];
@@ -41,7 +42,7 @@ public class FileStatus {
         return String.format("location=%s id=%s\nsize=%,d lastModified=%s flags=%d", destination, id, size, modTime, flags);
     }
 
-    public Destination getFileLocation() {
+    public InetSocketAddress getFileLocation() {
         return destination;
     }
 }

@@ -1,5 +1,6 @@
 package hep.io.root.daemon.xrootd;
 
+import java.net.InetSocketAddress;
 
 /**
  * A class representing an open xrootd file. It encapsulates a handle used 
@@ -11,7 +12,7 @@ package hep.io.root.daemon.xrootd;
 public class OpenFile {
 
     private int handle;
-    private Destination destination;
+    private InetSocketAddress destination;
     private Multiplexor multiplexor;
     private String path;
     private int mode;
@@ -30,7 +31,7 @@ public class OpenFile {
         return handle;
     }
 
-    public Destination getDestination() {
+    public InetSocketAddress getDestination() {
         return destination;
     }
     
@@ -38,7 +39,7 @@ public class OpenFile {
         return multiplexor;
     }
     
-    void setHandleAndDestination(int handle, Destination destination, Multiplexor multiplexor)
+    void setHandleAndDestination(int handle, InetSocketAddress destination, Multiplexor multiplexor)
     {
         this.handle = handle;
         this.destination = destination;

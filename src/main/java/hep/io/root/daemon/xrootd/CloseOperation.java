@@ -2,6 +2,7 @@ package hep.io.root.daemon.xrootd;
 
 import hep.io.root.daemon.xrootd.Callback.DefaultCallback;
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 
 /**
@@ -22,7 +23,7 @@ public class CloseOperation extends Operation<Void> {
     }
 
     @Override
-    public Destination getDestination() {
+    public InetSocketAddress getDestination() {
         return file.getDestination();
     }
 

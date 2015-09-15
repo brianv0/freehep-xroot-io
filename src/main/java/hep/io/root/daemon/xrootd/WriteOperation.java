@@ -1,6 +1,7 @@
 package hep.io.root.daemon.xrootd;
 
 import hep.io.root.daemon.xrootd.Callback.DefaultCallback;
+import java.net.InetSocketAddress;
 
 /**
  * Write data to an open file.
@@ -21,7 +22,7 @@ public class WriteOperation extends Operation<Void> {
     }
 
     @Override
-    public Destination getDestination() {
+    public InetSocketAddress getDestination() {
         return file.getDestination();
     }
 
